@@ -1,5 +1,5 @@
 <template>
-  <div class="categories__block" :class="{'categories-search_active': showModalOverlay}">
+  <div class="categories__block" :class="{'categories-search_active': showSearchModal}">
     <div class="categories__container">
       <div class="categories__list">
         <v-chip active-class="category-chips_active"
@@ -54,7 +54,7 @@
           {{ item.name }}
         </v-chip>
       </div>
-      <v-overlay :value="showModalOverlay" :dark="false">
+      <v-overlay :value="showSearchModal" :dark="false">
         <div class="modal-search-wrapper">
           <searchModal @closeModalWindow="toggleShowSearchModal"/>
         </div>
@@ -105,7 +105,6 @@
           id: -1,
           isMore: false
         },
-        showModalOverlay: false,
         searchNameKitchenDish: '',
         restOverlay: false,
       }

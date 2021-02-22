@@ -11,10 +11,15 @@
             <p class="modal__title">
               {{ restaurant.name }}
             </p>
-            <v-icon class="material-icon" @click="handleClickShowRestInfo">close</v-icon>
+            <v-icon class="material-icon modal__button"
+                    :size="35"
+                    @click="handleClickShowRestInfo"
+            >
+              close
+            </v-icon>
           </div>
           <div class="modal__center">
-            <p class="modal__title">
+            <p class="modal__name">
               {{restaurant.name}}
             </p>
             <div class="modal__address"
@@ -42,6 +47,7 @@
     <div class="restaurant-preview__center">
       <v-chip class="preview__show-rating-button"
               :color="showRatingSheet ? 'primary': null"
+              :disabled="restaurant.rating === 0"
               @click="handleClickShowRating"
       >
         <v-icon class="material-icon">star</v-icon>
@@ -54,7 +60,12 @@
               <p class="modal__title">
                 Рейтинг
               </p>
-              <v-icon class="material-icon" @click="handleClickShowRating">close</v-icon>
+              <v-icon class="material-icon"
+                      :size="35"
+                      @click="handleClickShowRating"
+              >
+                close
+              </v-icon>
             </div>
           </div>
           <div v-if="restaurant.rating !== 0" class="modal__center-text">
@@ -77,7 +88,12 @@
             <p class="modal__title">
               Условия доставки
             </p>
-            <v-icon class="material-icon" @click="handleClickShowDeliveryOptions">close</v-icon>
+            <v-icon class="material-icon"
+                    :size="35"
+                    @click="handleClickShowDeliveryOptions"
+            >
+              close
+            </v-icon>
           </div>
           <div class="modal__center">
             <div v-for="fee in restaurant.delivery.fee"
@@ -143,6 +159,9 @@
   }
 </script>
 <style lang="scss" scoped>
+  .mobile-preview__container {
+    padding-top: 5px;
+  }
   .restaurant-preview__top {
     display: flex;
     margin-bottom: 12px;
@@ -159,6 +178,7 @@
   .restaurant-preview__center {
     display: flex;
     flex-wrap: wrap;
+    padding-bottom: 15px;
   }
 
   .preview__show-rating-button, .preview__show-delivery-options-button,
@@ -172,5 +192,25 @@
 
   .preview__show-rating-button .v-icon {
     margin-right: 5px;
+  }
+
+  .restaurant-info__modal, .restaurant-rating__modal, .restaurant__delivery-options {
+    padding: 20px;
+  }
+
+  .modal__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal__title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  .modal__button {
+    margin: 5px 0;
   }
 </style>

@@ -179,7 +179,7 @@
 
   .info__set-address-text {
     display: flex;
-    color: #b0b0b0;
+    color: $gray-b0;
     padding-bottom: 25px;
     font-size: 12px;
     line-height: 1.67;

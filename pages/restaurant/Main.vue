@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="restaurant__main-container">
     <div class="restaurant__header" v-if="isMobile">
       <div class="header__icon">
         <v-icon class="material-icon" @click="$router.back()">arrow_back</v-icon>
@@ -9,12 +9,13 @@
       </h1>
     </div>
     <div class="restaurant__block">
-      <Preview :restaurant="restaurant" :is-mobile="isMobile"></Preview>
-      <Menu></Menu>
-      <Offers></Offers>
-      <DishesList></DishesList>
+      <Preview class="restaurant__preview" :restaurant="restaurant" :is-mobile="isMobile"/>
+      <Menu class="restaurant__menu" :restaurant="restaurant"/>
+      <Offers class="restaurant__offers" :sales="restaurant.salesText"/>
+      <DishesList class="restaurant__dishes-list" :restaurant="restaurant" @cardClicked="onDishCardClicked($event)"/>
     </div>
-    <MyOrder></MyOrder>
+    <MyOrder :restaurant="restaurant" :is-mobile="isMobile" :selected-dish="selectedDish"></MyOrder>
+    <DishShowModal v-if="showDishInfoModal" :dish="selectedDish" @close="toggleDishInfoModal"/>
   </div>
 </template>
 
@@ -24,8 +25,9 @@
   import Offers from "@/components/restaurant/Offers.vue";
   import DishesList from "@/components/restaurant/DishesList.vue";
   import MyOrder from "@/components/order/MyOrder.vue";
+  import DishShowModal from "@/components/restaurant/DishShowModal";
 
-  // need to watch on dished in basket(vuex) and filter array of dishes every time
+  // need to watch on dishes in basket(vuex) and filter array of dishes every time
 
   import RestaurantApi from "../../api/RestaurantApi";
   import ZoneApi from "../../api/ZoneApi";
@@ -136,11 +138,24 @@
       Offers,
       DishesList,
       MyOrder,
+      DishShowModal
     }
   }
 </script>
 
 <style lang="scss" scoped>
+  .restaurant__main-container {
+    //padding: 65px 16px 10px;
+    height: 100%;
+    @include media($lg) {
+      max-width: 1500px;
+      padding: 100px 40px 20px;
+      display: grid;
+      grid-template-columns: calc(100% - 320px) 310px;
+      grid-column-gap: 10px;
+    }
+  }
+
   .restaurant__header {
     height: 60px;
     width: 100%;
@@ -168,6 +183,37 @@
   }
 
   .restaurant__block {
-    margin-top: 70px;
+    flex: 1 1 auto;
+    padding: 60px 0 10px;
+    background-color: $gray-249;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    @include media($lg) {
+      padding: unset;
+      border: 1px solid #d5d5d5;
+    }
+  }
+
+  .restaurant__preview {
+    order: 1;
+  }
+
+  .restaurant__menu {
+    order: 3;
+    @include media($lg) {
+      order: 2
+    }
+  }
+
+  .restaurant__offers {
+    order: 2;
+    @include media($lg) {
+      order: 3
+    }
+  }
+
+  .restaurant__dishes-list {
+    order: 4
   }
 </style>

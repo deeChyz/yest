@@ -109,27 +109,27 @@ export const actions = {
     if (!existingDish) {
       commit(types.ADD_DISH_TO_BASKET, payload);
     } else {
-      const dishSizesEquals = existingDish.selectedSize.id === payload.selectedSize.id;
-      if (!dishSizesEquals) {
-        commit(types.ADD_DISH_TO_BASKET, payload);
-      } else {
-        commit(types.INCREMENT_DISH_COUNTER, payload);
-      }
+      // const dishSizesEquals = existingDish.selectedSize.id === payload.selectedSize.id;
+      // if (!dishSizesEquals) {
+      //   commit(types.ADD_DISH_TO_BASKET, payload);
+      // } else {
+      //   commit(types.INCREMENT_DISH_COUNTER, payload);
+      // }
     }
 
-    TagManagerHelper.modifyEcommerceObject({
-        id: payload.selectedSize.id,
-        name: payload.name,
-        price: payload.selectedSize.price,
-        brand: '',
-        category: '',
-        quantity: 1
-      },
-      'add',
-      'products',
-      'Adding a Product to a Shopping Cart',
-      false
-    );
+    // TagManagerHelper.modifyEcommerceObject({
+    //     id: payload.selectedSize.id,
+    //     name: payload.name,
+    //     price: payload.selectedSize.price,
+    //     brand: '',
+    //     category: '',
+    //     quantity: 1
+    //   },
+    //   'add',
+    //   'products',
+    //   'Adding a Product to a Shopping Cart',
+    //   false
+    // );
   },
   [types.EMPTY_BASKET] ({ commit, state }) {
     state.dishes.forEach(function (data) {

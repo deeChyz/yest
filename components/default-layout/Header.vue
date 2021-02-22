@@ -3,7 +3,7 @@
     <div class="header__container">
       <div class="header__sidebar-button" v-if="!showSidebar" @click="showSidebar = !showSidebar"></div>
       <sidebar v-if="showSidebar"></sidebar>
-      <nuxt-link class="header__link" v-if="!showSidebar" :to="{currentRouteName}">
+      <nuxt-link class="header__link" v-if="!showSidebar" :to="currentRouteName">
         <img v-if="!(getCurrentAddress && getCurrentAddress.length > 0 || showSetAddressButton)"
              class="link__logo"
              src="@/assets/svg/logo.svg"
@@ -207,9 +207,9 @@
         getUserPhoneNumber: STORE_GET_USER_PHONE_NUMBER
       }),
       currentRouteName () {
-        //todo: change this route, use route name!
-        return this.getSelectedZone && this.getSelectedZone.alias !== undefined ?
-            `/${this.getSelectedZone.alias}`: '/';
+        return this.getSelectedZone && this.getSelectedZone.alias
+            ? { name: 'restaurants', params: { region: this.getSelectedZone.alias } }
+            : { name: 'home' };
       },
       buttonText () {
         if (!this.getCurrentAddress || this.getCurrentAddress === '') {
@@ -266,9 +266,6 @@
     @include media($lg) {
       height: 80px;
     }
-    @include media($xxl) {
-      border-bottom: unset;
-    }
   }
 
   .header__container {
@@ -282,6 +279,7 @@
       max-width: 1500px;
       padding: 10px 40px;
       width: 100%;
+      height: 100%;
     }
   }
 

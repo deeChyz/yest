@@ -62,16 +62,16 @@
       </div>
       <div class="social-links">
         <a href="https://www.facebook.com/groups/yestby/" rel="nofollow" target="_blank" class="social-link">
-          <img src="@/assets/svg/fb.svg" alt="facebook" class="social-link__img">
+          <img src="@/assets/svg/social-links/fb.svg" alt="facebook" class="social-link__img">
         </a>
         <a href="https://vk.com/yestby" rel="nofollow" target="_blank" class="social-link">
-          <img src="@/assets/svg/vk.svg" alt="vk" class="social-link__img">
+          <img src="@/assets/svg/social-links/vk.svg" alt="vk" class="social-link__img">
         </a>
         <a href="https://www.instagram.com/yest.by/" rel="nofollow" target="_blank" class="social-link">
-          <img src="@/assets/svg/insta.svg" alt="instagramm" class="social-link__img">
+          <img src="@/assets/svg/social-links/insta.svg" alt="instagramm" class="social-link__img">
         </a>
         <a href="https://twitter.com/yest_by" rel="nofollow" target="_blank" class="social-link">
-          <img src="@/assets/svg/twitter.svg" alt="twitter" class="social-link__img">
+          <img src="@/assets/svg/social-links/twitter.svg" alt="twitter" class="social-link__img">
         </a>
       </div>
     </div>
@@ -259,7 +259,7 @@
   .list__title {
     width: 100%;
     margin-bottom: 15px;
-    color: #b0b0b0;
+    color: $gray-b0;
     font-size: 12px;
     font-weight: 300;
     letter-spacing: 2px;

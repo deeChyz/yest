@@ -90,5 +90,6 @@
 
   .main__container-without-header {
     padding: 0;
+    height: 100%;
   }
 </style>

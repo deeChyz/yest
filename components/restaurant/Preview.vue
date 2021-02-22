@@ -32,6 +32,10 @@
 <style lang="scss" scoped>
   .restaurant-preview__block {
     padding: 0 16px;
-    margin-bottom: 15px;
+    background-color: $white;
+    @include media($lg) {
+      padding: 0;
+      background-color: unset;
+    }
   }
 </style>

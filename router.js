@@ -15,7 +15,7 @@ import Rabota from "./pages/resources/Rabota.vue";
 import TermsOfUse from "./pages/resources/TermsOfUse.vue";
 import RestaturantsMain from "./pages/restaurants/Main.vue";
 import RestaurantMain from "./pages/restaurant/Main";
-import BasketMain from "./pages/basket/Main"
+import BasketMain from "./pages/basket/Main";
 
 export function createRouter() {
   return new Router({

@@ -5,7 +5,11 @@
     :disabled="disabled"
     :to="to"
     class="yest-button"
-    :class="{'yest-button_disabled': disabled, 'yest-button_bold': bold, 'yest-button_narrow': narrow, 'yest-button_green': color}"
+    :class="[color && `yest-button_` + color,
+             disabled && 'yest-button_disabled',
+             bold && 'yest-button_bold',
+             narrow && 'yest-button_narrow',
+    ]"
   >
     <div v-if="$slots['icon']" class="yest-button__icon">
       <slot name="icon"></slot>
@@ -28,7 +32,7 @@
       color: {
         type: String,
         default: 'green',
-        validator: value => value.match(/(green|white)/),
+        validator: value => value.match(/(green|white|gray)/),
       },
       bold: {
         type: Boolean,
@@ -59,6 +63,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
     @include media($lg) {
       font-size: 16px;
       padding: 15px 30px;
@@ -67,7 +72,9 @@
   }
 
   .yest-button_disabled {
-
+    background-color: $gray-b0;
+    opacity: .7;
+    pointer-events: none;
   }
 
   .yest-button_bold {
@@ -78,12 +85,22 @@
 
   }
 
-  .yest-button_green {
-    background-color: $green;
-    color: $white;
+  .yest-button {
+    &_green {
+      background-color: $green;
+      color: $white;
+    }
+    &_white {
+      background-color: $white;
+      color: #9E9B98;
+    }
+    &_gray {
+      background-color: #F1F0ED;
+      color: $black;
+    }
   }
 
   .yest-button__icon {
-    margin-right: 5px;
+    //margin-right: 5px;
   }
 </style>
