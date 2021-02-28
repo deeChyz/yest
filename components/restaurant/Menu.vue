@@ -1,14 +1,20 @@
 <template>
   <div class="restaurant-menu__block">
-    <div class="restaurant-catalog__list">
-      <div class="catalog__item" v-for="category in restaurant.menu"
-           :key="category.cat_id"
-           :class="{'catalog__item_active': category.cat_id === 1450}"
-           @click="handleClickCategory(category.id)"
+    <v-tabs v-model="tab" hide-slider z-index="1" class="restaurant-catalog__list" center-active>
+      <v-tab
+        v-for="(category, index) in restaurant.menu"
+        :key="category.cat_id"
+        active-class="catalog__item_active"
+        :class="{'catalog__item_active': currentTab === index}"
+        height="70px"
+        class="catalog__item"
+        @click="handleClickCategory(category.cat_id)"
       >
-        {{ category.name }}
-      </div>
-    </div>
+        <v-chip>
+          {{ category.name }}
+        </v-chip>
+      </v-tab>
+    </v-tabs>
   </div>
 </template>
 
@@ -24,6 +30,15 @@
       selectedCategoryId: {
         type: [Number, String],
         default: 0
+      },
+      currentTab: {
+        type: Number,
+        default: 0
+      }
+    },
+    watch: {
+      currentTab(val) {
+        this.tab = val;
       }
     },
     data () {
@@ -33,7 +48,13 @@
     },
     methods: {
       handleClickCategory (id) {
-        this.$emit('catalogId', id);
+        const element = document.getElementById(id)
+        const yOffset = window.innerWidth < 992 ? 80 : 140
+        const y = element.getBoundingClientRect().top + window.pageYOffset - yOffset
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth'
+        })
       }
     }
   }
@@ -84,36 +105,93 @@
   }
 
   .catalog__item {
-    display: flex;
-    align-items: center;
-    height: 32px;
-    border-radius: 14px;
-    line-height: 20px;
-    letter-spacing: 0.5px;
-    font-family: sans-serif;
-    color: #a3a3a3;
-    white-space: nowrap;
-    cursor: pointer;
-    margin-right: 10px;
-    padding: 0 12px;
+    display: flex !important;
+    align-items: center !important;
+    border-radius: 14px !important;
+    line-height: 20px !important;
+    letter-spacing: 0.5px !important;
+    font-family: sans-serif !important;
+    background-color: $white !important;
+    color: #a3a3a3 !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+    margin-right: 10px !important;
+    padding: 0 12px !important;
+
+    transition: none;
+    text-transform: initial;
+    border-bottom: 4px solid #fff !important;
+    font-size: 16px !important;
     &:last-child {
-      margin-right: unset;
+      margin-right: unset !important;
     }
     @include media($lg) {
-      height: 70px;
-      font-size: 16px;
-      letter-spacing: 0.8px;
-      border-radius: unset;
-      padding: 0 16px;
+      font-size: 16px !important;
+      letter-spacing: 0.8px !important;
+      border-radius: unset !important;
+      padding: 0 16px !important;
+    }
+    span {
+      background-color: $white !important;
+      .v-tab {
+        opacity: 1 !important;
+      }
+    }
+
+    &:hover{
+      ::before{
+        opacity: 0 !important;
+      }
+      background-color: $white !important;
+      .v-tab {
+        opacity: 1 !important;
+      }
+      span {
+        background-color: $white !important;
+        .v-tab {
+          opacity: 1 !important;
+        }
+        ::before{
+          opacity: 0 !important;
+        }
+      }
     }
   }
 
+  .theme--light.v-tabs .v-tab--active:hover::before, .theme--light.v-tabs .v-tab--active::before {
+    opacity: 0 !important;
+  }
+
   .catalog__item_active {
-    background-color: #f1f0ed;
-    color: $black;
+    background-color: $gray-f1 !important;
+    color: $black !important;
     @include media($lg) {
-      background-color: unset;
-      border-bottom: 4px solid $green;
+      background-color: $white !important;
+      border-bottom: 4px solid $green !important;
+      color: #000;
+    }
+    .v-tab--active:hover::before {
+      opacity: 0 !important;
+    }
+    ::before{
+      opacity: 0 !important;
+    }
+    &:hover{
+      background-color: $white !important;
+
+      ::before{
+        opacity: 0 !important;
+      }
+      .v-tab--active:hover::before {
+        opacity: 0 !important;
+      }
+
+      span {
+        background-color: $white !important;
+        .v-tab {
+          opacity: 0 !important;
+        }
+      }
     }
   }
 </style>

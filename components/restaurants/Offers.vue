@@ -5,7 +5,7 @@
 
       <div class="swiper-wrapper offers__wrapper">
         <div v-for='(item, index) in restaurantsList' :key='index' class="swiper-slide">
-          <nuxt-link :to="restaurantUrl(item)"  class="restaurant__item">
+          <nuxt-link :to="restaurantRoute(item)" class="restaurant__item">
             <div class="item__block">
               <div class="item__logo" v-if="item.logo !== undefined">
                 <img contain :alt="item.name" :src="item.logo" class="item__logo_small">
@@ -60,8 +60,9 @@
 </template>
 
 <script>
-  import {directive} from 'vue-awesome-swiper';
-  import {Swiper, Navigation, Autoplay} from 'swiper';
+  import { directive } from "vue-awesome-swiper";
+  import { Swiper, Navigation, Autoplay } from "swiper";
+  import { translitereteRusToLatin } from "../../utils/functions/transliter";
 
   Swiper.use(Navigation);
   Swiper.use(Autoplay);
@@ -137,18 +138,20 @@
       }
     },
     methods: {
-      restaurantUrl(info){
-        // let name = this.translite(info.name)
-        // let modifName = name.replace(' ', '-')
-        // let url = `${this.currentZone.alias}/restaurant/${info.restaurant_id}-${modifName.toLowerCase()}`
-        // return url;
-        return  `/minsk`;
+      restaurantRoute(restaurant){
+        return {
+          name: 'restaurant',
+          params: {
+            restaurantName: `${restaurant.restaurant_id}-${translitereteRusToLatin(restaurant.name)}`
+          }
+        };
       },
     }
   }
 </script>
 
 <style lang="scss" scoped>
+  @import "assets/scss/specialOffers";
   .offers__container {
     border-left: 1px solid rgba(0, 0, 0, 0.1);
     border-right: 1px solid rgba(0, 0, 0, 0.1);
@@ -404,7 +407,7 @@
   .sale__text {
     padding: 8px 12px 8px 18px;
     font-size: 13px;
-    background: #f1f0ed;
+    background: $gray-f1;
     line-height: 16px;
     flex-shrink: 0;
     border-radius: 999px;

@@ -21,6 +21,10 @@ export const SORT_BY_COORDINATES_DEFAULT_START = 0;
 export const CATEGORY_INFO_DEFAULT_BACKGROUND_URL = 'https://yastatic.net/s3/eda-front/prod-www/assets/default-d3a889e26c9ac9089ce5b007da1ac51b.png';
 export const CATEGORY_INFO_DEFAULT_ICON_URL = 'https://menu-menu.by/images/category_background/mobile/pizza.jpg';
 
+export const DEFAULT_SEARCH_MODAL_IMAGE_URL = 'https://img.eatmealby.com/resize/restaurant/600/';
+
+export const DEFAULT_RESTAURANTS_SHOW_LIMIT = 12;
+
 export const STORE_SET_ZONES = `zone/${SET_ZONES}`;
 export const STORE_SET_SELECTED_ZONE = `zone/${SET_SELECTED_ZONE}`;
 export const STORE_SET_CATEGORY_INFO = `restaurant/${SET_CATEGORY_INFO}`;

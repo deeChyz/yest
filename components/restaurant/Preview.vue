@@ -1,13 +1,13 @@
 <template>
  <div class="restaurant-preview__block">
    <MobilePreview v-if="isMobile" :restaurant="restaurant"></MobilePreview>
-   <DesctopPreview v-else :restaurant="restaurant"></DesctopPreview>
+   <DesktopPreview v-else :restaurant="restaurant"></DesktopPreview>
  </div>
 </template>
 
 <script>
   import MobilePreview from "@/components/restaurant/preview/Mobile.vue";
-  import DesctopPreview from "@/components/restaurant/preview/Desctop.vue";
+  import DesktopPreview from "@/components/restaurant/preview/Desktop.vue";
 
   export default {
     props: {
@@ -24,7 +24,7 @@
     },
     components: {
       MobilePreview,
-      DesctopPreview,
+      DesktopPreview,
     }
   }
 </script>

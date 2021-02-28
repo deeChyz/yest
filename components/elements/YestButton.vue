@@ -92,10 +92,11 @@
     }
     &_white {
       background-color: $white;
+      border: 1px solid $gray-dd;
       color: #9E9B98;
     }
     &_gray {
-      background-color: #F1F0ED;
+      background-color: $gray-f1;
       color: $black;
     }
   }

@@ -1,8 +1,8 @@
 <template>
   <div class="restaurant-dishes__block">
     <div v-for="(category, index) in restaurant.menu" :key="category.id">
-      <div class="category__title">
-        <h2 :id="`category_${index}`" >
+      <div class="category__title" :id="category.cat_id">
+        <h2 :id="`category_${index}`" v-intersect="categoryNameIntersect">
           {{ category.name }} &nbsp;
         </h2>
         <span class="title-dishes-count">
@@ -11,10 +11,10 @@
       </div>
       <div class="restaurant-dishes__list">
         <dish v-for="(dish, index) in category.dishes"
-              :dish="dish"
+              :dish-info="dish"
               v-show="dish !== null ? dish.status : false"
               :key="`dish_${index}`"
-              @cardClicked="onCardClick($event)"
+              @cardClicked="onCardClick(dish)"
         />
       </div>
     </div>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  import Dish from "@/components/restaurant/Dish.vue";
+  import Dish from "../../components/restaurant/Dish.vue";
 
   export default {
     props: {
@@ -33,12 +33,19 @@
     },
     data () {
       return {
-
+        tab: 0,
       }
     },
     methods: {
       onCardClick (dish) {
         this.$emit('cardClicked', dish);
+      },
+      categoryNameIntersect (entries, observer, isIntersecting) {
+        if (isIntersecting) {
+          const visibleCategory = entries[0].target.id.split('_')
+          this.tab = parseInt(visibleCategory[1])
+          this.$emit('currentTab', this.tab);
+        }
       },
     },
     components: {

@@ -96,7 +96,8 @@
   import SmsForm from '../forms/Sms.vue';
   import MapContainer from '../map/Container.vue';
 
-  import { ITEMS } from "@/utils/confs/pages/defaultLayout";
+  import { ITEMS } from "../../utils/confs/pages/defaultLayout";
+  import { SHOW_MAP } from "../../utils/confs/store-actions/map";
   import {
     STORE_SET_EMPTY_BASKET,
     STORE_SET_SELECTED_ZONE,
@@ -107,11 +108,9 @@
     STORE_IS_MAP_VISIBLE,
     STORE_IS_INPUT_ADDRESS_MODE,
     STORE_GET_TOTAL_PRICE,
-    STORE_GET_USER_PHONE_NUMBER
-  } from '@/utils/confs/pages/defaultLayout';
-
-  import {SHOW_MAP} from "@/utils/confs/store-actions/map";
-
+    STORE_GET_USER_PHONE_NUMBER,
+    STORE_GET_RESTAURANT_URL
+  } from '../../utils/confs/pages/defaultLayout';
 
   export default {
     props: {
@@ -155,12 +154,21 @@
       }),
       goToLatestReset () {
         setTimeout(() => {
-          //todo: change this routes, use route name
-          if (this.getLatetestRestInfoWithOrder !== null) {
-            this.$router.push(`/${this.getLatetestRestInfoWithOrder.params.region}/restaurant/${this.getLatetestRestInfoWithOrder.params.resName}`);
-          } else {
-            this.$router.push(`/${this.getSelectedZone.alias}`);
-          }
+          this.$router.push(
+          Boolean(this.getRestaurantUrl) ?
+          {
+            name: 'restaurant',
+            params: {
+              region: this.getRestaurantUrl.params.region,
+              restaurantName: this.getRestaurantUrl.params.restaurantName
+            }
+          } :
+          {
+            name: 'restaurants',
+              params: {
+              region: this.getSelectedZone.alias
+            }
+          }).catch(()=>{});
         }, 100);
       },
       closeAuthForm (){
@@ -203,7 +211,7 @@
         getZoneList: STORE_GET_ZONE_LIST,
         getTotalPrice: STORE_GET_TOTAL_PRICE,
         //chto eto???
-        getLatetestRestInfoWithOrder: "getLatetestRestInfoWithOrder",
+        getRestaurantUrl: STORE_GET_RESTAURANT_URL,
         getUserPhoneNumber: STORE_GET_USER_PHONE_NUMBER
       }),
       currentRouteName () {

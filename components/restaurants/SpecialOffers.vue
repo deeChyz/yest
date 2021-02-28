@@ -2,8 +2,12 @@
   <div class='special-offer__container'>
     <div v-swiper="swiperOptions" id='swiper' ref="swiper">
       <div class="swiper-wrapper special-offer__wrapper">
-        <a class="swiper-slide special-offer__slide" :href="item.link" v-for='(item, index) in offers' :key='index'
-           @click="goToUrl(item)">
+        <a class="swiper-slide special-offer__slide"
+           :href="item.link"
+           v-for='(item, index) in offers'
+           :key='index'
+           @click="goToUrl(item)"
+        >
           <img :src='item.image' :alt="`special-offer${index}`" class="special-offer__img"/>
         </a>
       </div>

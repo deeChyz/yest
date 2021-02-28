@@ -1,14 +1,14 @@
 <template>
   <div>
     <layoutHeader
-      v-if="!isMapVisible && currentRouteName !== 'cart'"
-      :class="{'header_hidden': currentRouteName ==='restaurant'}"
+      v-if="!isMapVisible && currentRouteName !== 'basket'"
+      :class="{'header_hidden': currentRouteName === 'restaurant'}"
       :is-mobile="isMobile"
     >
     </layoutHeader>
     <v-app v-if="!isMapVisible">
       <v-container class="main__container"
-                   :class="{'main__container-without-header': currentRouteName ==='restaurant'}"
+                   :class="{'main__container-without-header': containerWithoutHeader}"
       >
         <Nuxt/>
       </v-container>
@@ -50,6 +50,10 @@
     computed: {
       currentRouteName () {
         return this.$route.name;
+      },
+      containerWithoutHeader() {
+        const routesNames = ['restaurant', 'basket'];
+        return routesNames.includes(this.currentRouteName);
       }
     },
     components: {

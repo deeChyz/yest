@@ -6,7 +6,7 @@ class RestaurantApi extends BaseApi {
   }
 
   getRestaurantsByCategory (params, categoryId) {
-    return this.axios.get(`restaurants/category/${categoryId}`, { params }).then(response => response.data);
+    return this.axios.post(`restaurants/category/${categoryId}`, params).then(response => response.data);
   }
 
   getRestaurantInfo (id, params) {

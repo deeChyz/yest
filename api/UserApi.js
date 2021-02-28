@@ -1,17 +1,13 @@
 import BaseApi from "./BaseApi";
 
 class UserApi extends BaseApi {
-  constructor(props) {
-    super(props);
-    this.axios.defaults.baseURL += 'user/';
+
+  getSmsWithCode (data) {
+    return this.axios.post('user/send_sms', data);
   }
 
-  getSmsWithCode () {
-    return this.axios.post('send_sms').then(response => response.data);
-  }
-
-  authUser () {
-    return this.axios.post('auth').then(response => response.data);
+  authUser (data) {
+    return this.axios.post('user/auth', data);
   }
 }
 

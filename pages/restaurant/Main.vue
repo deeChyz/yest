@@ -9,23 +9,38 @@
       </h1>
     </div>
     <div class="restaurant__block">
-      <Preview class="restaurant__preview" :restaurant="restaurant" :is-mobile="isMobile"/>
-      <Menu class="restaurant__menu" :restaurant="restaurant"/>
-      <Offers class="restaurant__offers" :sales="restaurant.salesText"/>
-      <DishesList class="restaurant__dishes-list" :restaurant="restaurant" @cardClicked="onDishCardClicked($event)"/>
+      <Preview class="restaurant__preview"
+               :restaurant="restaurant"
+               :is-mobile="isMobile"/>
+      <Menu class="restaurant__menu"
+            :current-tab="currentTab"
+            :restaurant="restaurant"/>
+      <Offers class="restaurant__offers"
+              :sales="restaurant.salesText"/>
+      <DishesList class="restaurant__dishes-list"
+                  :restaurant="restaurant"
+                  @currentTab="currentTabEvent"
+                  @cardClicked="onDishCardClicked"/>
     </div>
-    <MyOrder :restaurant="restaurant" :is-mobile="isMobile" :selected-dish="selectedDish"></MyOrder>
-    <DishShowModal v-if="showDishInfoModal" :dish="selectedDish" @close="toggleDishInfoModal"/>
+    <MyOrder :restaurant="restaurant"
+             :is-mobile="isMobile"
+             :selected-dish="selectedDish"
+    />
+    <DishShowModal v-if="showDishInfoModal"
+                   :dish="selectedDish"
+                   @close="toggleDishInfoModal"
+                   @addButtonClicked="onAddButtonClick"
+    />
   </div>
 </template>
 
 <script>
-  import Preview from "@/components/restaurant/Preview.vue";
-  import Menu from "@/components/restaurant/Menu.vue";
-  import Offers from "@/components/restaurant/Offers.vue";
-  import DishesList from "@/components/restaurant/DishesList.vue";
-  import MyOrder from "@/components/order/MyOrder.vue";
-  import DishShowModal from "@/components/restaurant/DishShowModal";
+  import Preview from "../../components/restaurant/Preview.vue";
+  import Menu from "../../components/restaurant/Menu.vue";
+  import Offers from "../../components/restaurant/Offers.vue";
+  import DishesList from "../../components/restaurant/DishesList.vue";
+  import MyOrder from "../../components/order/MyOrder.vue";
+  import DishShowModal from "../../components/restaurant/DishShowModal";
 
   // need to watch on dishes in basket(vuex) and filter array of dishes every time
 
@@ -46,17 +61,21 @@
     STORE_SET_RESTAURANT_URL,
     STORE_GET_RESTAURANT_URL
   } from "../../utils/confs/pages/restaurant";
+  import {
+    STORE_GET_DISHES
+  } from "../../utils/confs/pages/basket";
 
-  import deviceMixin from "@/utils/mixins/deviceMixin";
+  import deviceMixin from "../../utils/mixins/deviceMixin";
 
   export default {
-    mixins: [deviceMixin],
+    mixins: [ deviceMixin ],
     data () {
       return {
         restaurant: null,
         showRestaurantName: false,
         selectedDish: null,
-        showDishInfoModal: false
+        showDishInfoModal: false,
+        currentTab: 0,
       }
     },
     async asyncData ({ store, params, redirect }) {
@@ -83,6 +102,14 @@
 
       return  {
         restaurant
+      }
+    },
+    watch: {
+      'getDishes': {
+        handler () {
+          this.setLastRestaurantUrl();
+        },
+        deep: true
       }
     },
     mounted() {
@@ -115,6 +142,9 @@
       resetSelectedDish () {
         this.selectedDish = null;
       },
+      onAddButtonClick () {
+        this.toggleDishInfoModal();
+      },
       onAddDishToBasketButtonClick (dish) {  // call this method when button 'add' in modal clicked(eventname: addButtonClicked)
         this.addDishToBasket(dish);
       },
@@ -125,11 +155,15 @@
           restaurantName: this.restaurant.name,
           delivery: this.restaurant.delivery
         });
+      },
+      currentTabEvent(event) {
+        this.currentTab = event;
       }
     },
     computed: {
       ...mapGetters({
-        getRestaurantUrl: STORE_GET_RESTAURANT_URL
+        getRestaurantUrl: STORE_GET_RESTAURANT_URL,
+        getDishes: STORE_GET_DISHES
       })
     },
     components: {

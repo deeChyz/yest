@@ -62,7 +62,10 @@
     </div>
     <div class="search-box">
       <v-text-field placeholder="Название, кухня или блюдо"
-                    height="46" dense clearable prepend-inner-icon="search"
+                    height="46"
+                    dense
+                    clearable
+                    prepend-inner-icon="search"
                     outlined
                     class="search-box__desktop"
                     v-model="searchNameKitchenDish"
@@ -124,7 +127,7 @@
       this.firstHalfOfCategories = this.categoriesList.slice(0, this.sliceCounter);
       this.secondHalfOfCategories = this.categoriesList.slice(this.sliceCounter, this.categoriesList.length);
 
-      let checkMoreAvailable = this.firstHalfOfCategories.find((cat)=>{
+      let checkMoreAvailable = this.firstHalfOfCategories.find(cat =>{
         return cat.id === this.currentCategory.id
       });
       if (checkMoreAvailable === undefined) {
@@ -171,7 +174,10 @@
     border-right: 1px solid rgba(0, 0, 0, .1);
     background: $white;
     @include media($lg) {
+      display: block;
+      top: 0;
       position: relative;
+      border-bottom: 4px solid rgba(245, 245, 245, 0.6);
     }
   }
 
@@ -333,7 +339,6 @@
     @include media($lg) {
       display: unset;
       padding: 0 80px 6px!important;
-      border-bottom: 4px solid rgba(245, 245, 245, 0.6);
     }
   }
 

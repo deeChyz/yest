@@ -14,5 +14,6 @@ export const STORE_GET_ZONE_LIST = 'zone/getZoneList';
 export const STORE_IS_MAP_VISIBLE = 'map/isMapVisible';
 export const STORE_IS_INPUT_ADDRESS_MODE = 'map/isInputAddressMode';
 export const STORE_GET_TOTAL_PRICE = 'basket/getTotalPrice';
+export const STORE_GET_RESTAURANT_URL = 'basket/getRestaurantUrl';
 export const STORE_GET_USER_PHONE_NUMBER = 'user/getUserPhoneNumber';
 export const STORE_GET_CATEGORIES = 'restaurant/getCategories';

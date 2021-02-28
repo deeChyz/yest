@@ -1,9 +1,9 @@
 <template>
-  <div class="dish__item" @click="onPlusButtonClick">
+  <div class="dish__item" :id="dish.id" :class="{'dish__item_selected': !isMobile && isDishInBasket}">
     <v-card v-if="dish !== null" class="dish__card">
       <div class="card__block">
-        <div class="card__dish-preview-img">
-          <span v-if="dish.sizes && dish.sizes[0] && dish.sizes[0].sale === 2" class="card__sale">%</span>
+        <div class="card__dish-preview-img" @click="onCardClick">
+          <span v-if="isDishSizeOnSale" class="card__sale">%</span>
           <img :src="'https://img.eatmealby.com/resize/dish/400/' + dish.image" :alt="dish.name" class="card__image">
           <div v-if="!dish.image" class="no-picture-block"></div>
         </div>
@@ -14,7 +14,7 @@
             </h3>
           </div>
           <div class="card__center">
-          <span class="card__price" v-if="!dishInBasket(dish)">
+          <span class="card__price" v-if="!isDishInBasket">
             <span class="card__price-value">
               {{computedPrice(dish.sizes)}} BYN
             </span>
@@ -33,8 +33,8 @@
           </div>
           <div class="card__bottom">
             <div class="card__interact-block">
-              <template  v-if="!dishInBasket(dish)">
-                <yest-button color="gray">
+              <template v-if="!isDishInBasket">
+                <yest-button class="card__interact-button" color="gray">
                   <div class="card__price-box card__button">
                   <span class="current-price">
                     {{ dish.sizes[0] ? dish.sizes[0].price.toFixed(1) : '' }} BYN
@@ -44,7 +44,7 @@
                   </span>
                   </div>
                 </yest-button>
-                <yest-button class="card__add-button-near-price" color="gray" @click="onPlusButtonClick">
+                <yest-button class="card__add-button-near-price" color="gray" @click.stop="onPlusButtonClick">
                   <template slot="icon">
                     <v-icon class="card__button material-icon">
                       add
@@ -55,17 +55,17 @@
               <div v-else class="card__select-dish-box">
                 <yest-button color="gray">
                   <template slot="icon">
-                    <v-icon class="card__button material-icon" @click="">
+                    <v-icon class="card__button material-icon" @click.stop="onMinusButtonClick">
                       remove
                     </v-icon>
                   </template>
                 </yest-button>
                 <div class="card__dishes-count">
-                  {{ dishesCount(dish) }}
+                  {{ overallSizesCounter }}
                 </div>
                 <yest-button color="gray">
                   <template slot="icon">
-                    <v-icon class="card__button material-icon" @click="">
+                    <v-icon class="card__button material-icon" @click.stop="onPlusButtonClick">
                       add
                     </v-icon>
                   </template>
@@ -95,7 +95,7 @@
               </v-btn>
             </div>
             <div class="modal__img-container">
-              <img :src="'https://img.eatmealby.com/resize/dish/400/'+dish.image"
+              <img :src="'https://img.eatmealby.com/resize/dish/400/' + dish.image"
                    :alt="dish.name"
                    class="modal__img"
               >
@@ -205,20 +205,20 @@
                 {{ dish.name }}
               </div>
               <div class="info__price">
-                {{ sizesRadioButtons.price }} BYN
+                {{ getTotalPrice }} BYN
               </div>
             </div>
             <div class="interact-block">
               <div class="interact__buttons">
-                <v-icon class="material-icon" @click="">
+                <v-icon class="material-icon" @click="decrementSelectedDishCounter">
                   remove
                 </v-icon>
                 <span class="interact__counter">{{ selectedDishCounter }}</span>
-                <v-icon class="material-icon" @click="">
+                <v-icon class="material-icon" @click="incrementSelectedDishCounter">
                   add
                 </v-icon>
               </div>
-              <yest-button class="interact__add-button" @click="">
+              <yest-button class="interact__add-button" @click="onAddButtonClick">
                 Добавить
               </yest-button>
             </div>
@@ -291,20 +291,20 @@
 </template>
 
 <script>
-  import {mapActions, mapGetters} from "vuex";
+  import { mapActions, mapGetters } from "vuex";
   import {
-    STORE_ADD_TO_BASKET,
     STORE_DECREMENT_DISH_COUNTER,
     STORE_REMOVE_DISH_FROM_BASKET
   } from "../../utils/confs/pages/restaurant";
-  import { STORE_GET_DISHES } from "@/utils/confs/pages/basket";
+  import { STORE_GET_DISHES } from "../../utils/confs/pages/basket";
 
-  import deviceMixin from "@/utils/mixins/deviceMixin";
+  import deviceMixin from "../../utils/mixins/deviceMixin";
+  import dishModalMixin from "../../utils/mixins/dishModalMixin";
 
   export default {
-    mixins: [ deviceMixin ],
+    mixins: [ deviceMixin, dishModalMixin ],
     props: {
-      dish: {
+      dishInfo: {
         type: Object,
         default: () => {}
       }
@@ -316,27 +316,43 @@
         sizesRadioButtons: '',
         selectedDishCounter: 1,
         dishOptionsCounter: 0,
-        showDishModal: false,
+        dish: null
+      }
+    },
+    watch: {
+      getDishes: {
+        handler (value) {
+          const basketDishIndex = value.findIndex(dish => dish.id === this.dishInfo.id);
+          this.dish = basketDishIndex !== -1 ? value[basketDishIndex] : this.dishInfo;
+        },
+        deep: true
+      }
+    },
+    created () {
+      this.dish = JSON.parse(JSON.stringify(this.dishInfo));
+      if (this.isDishInBasket && this.getDishes && this.getDishes.length) {
+        this.dish = this.getDishes.find(dish => dish.id === this.dishInfo.id);
       }
     },
     methods: {
       ...mapActions({
-        addDishToBasket: STORE_ADD_TO_BASKET,
         removeDishFromBasket: STORE_REMOVE_DISH_FROM_BASKET,
         decrementDishCounter: STORE_DECREMENT_DISH_COUNTER
       }),
       onCardClick () {
         if (this.isMobile) {
-          this.showDishModal = !this.showDishModal;
-        } else {
+          this.toggleDishModalState();
+        } else if (this.dishHasMoreThanOneSize) {
           this.$emit('cardClicked', this.dish);
+        } else {
+          this.pushDishToBasket(this.prepareDishObject());
         }
       },
       onPlusButtonClick () {
         if (this.dishHasMoreThanOneSize) {
           this.onCardClick();
         } else {
-          this.addDishToBasket(this.dish);
+          this.pushDishToBasket(this.prepareDishObject());
         }
       },
       onMinusButtonClick () {
@@ -346,18 +362,19 @@
           this.decrementDishCounter(this.dish);
         }
       },
-      dishInBasket (dish) {
-        return false;
+      toggleDishModalState () {
+        this.showDishModal = !this.showDishModal;
       },
       dishesCount (dish) {
-        const findItem = this.getDishes.find((item) => {
-          return item.id === dish.id
-        })
-        if (findItem !== undefined) {
-          return findItem.selectSize.count
-        } else {
-          return 0;
-        }
+        // const findItem = this.getDishes.find((item) => {
+        //   return item.id === dish.id
+        // })
+        // if (findItem !== undefined) {
+        //   return findItem.selectSize.count
+        // } else {
+        //   return 0;
+        // }
+        return 0;
       },
       computedPrice (prices) {
         if (prices.length === 0) {
@@ -365,7 +382,7 @@
         } else if (prices.length > 1) {
           const chekDiffrentPrice = prices.find((dish, index, arr) => {
             return dish.price === arr[index - 1]
-          })
+          });
           if (chekDiffrentPrice !== undefined) {
             return `От ${prices[0].price}`
           } else {
@@ -386,6 +403,14 @@
       dishHasMoreThanOneSize () {
         return this.dish.sizes.length > 1;
       },
+      isDishInBasket () {
+        return Boolean(this.getDishes
+          && this.getDishes.length
+          && this.getDishes.findIndex(dish => dish.id === this.dish.id) !== -1);
+      },
+      isDishSizeOnSale () {
+        return this.dish.sizes && this.dish.sizes[0] && this.dish.sizes[0].sale === 2
+      }
     }
   }
 </script>
@@ -410,16 +435,22 @@
     }
     @include media($lg) {
       width: calc((100% - 40px) / 2);
-      border-radius: 0;
+      border-radius: 4px;
       box-shadow: none;
       margin: 0 0 40px;
       padding: 18px 20px;
       cursor: pointer;
+      border-left: 3px solid $white;
       &:nth-child(2n - 1) {
         margin-right: 40px;
       }
     }
   }
+
+  .dish__item_selected {
+    border-left: 3px solid $green;
+  }
+
   .dish__card {
     overflow: hidden;
     box-shadow: none !important;
@@ -545,6 +576,10 @@
     }
   }
 
+  .card__interact-button {
+    height: 47px;
+  }
+
   .card__add-button {
     color: #7d7d7d !important;
     font-size: 17px;
@@ -552,7 +587,7 @@
     letter-spacing: -0.5px;
     height: 30px;
     width: 30px;
-    background-color: #F1F0ED;
+    background-color: $gray-f1;
     border-radius: 4px;
   }
 
@@ -631,6 +666,7 @@
 
   .card__image {
     width: 100%;
+    height: 170px;
     object-fit: cover;
     border-radius: 4px;
     overflow: hidden;
@@ -655,7 +691,7 @@
   }
 
   .card__top {
-    background: #fafafa;
+    //background: #fafafa;
   }
 
   .modal__close {

@@ -3,7 +3,8 @@
     <h2 class="restaurants-list__title" id="restTitle" v-show='isFound'>Рестораны</h2>
     <v-flex cols-12 wrap class="restaurants__list" v-if="restaurantsList && restaurantsList.length">
       <v-flex cols-12 md4 sm6 xs12
-              v-for="(item, index) in restaurantsList.slice(0, 5)"
+              v-for="(item, index) in restaurantsList"
+              v-if="index < restaurantsShowLimit"
               :key="index"
               class="restaurant__item"
               @click="restOverlay = !restOverlay"
@@ -16,22 +17,22 @@
             <img class="item__cover"
                  :alt="item.name"
                  :src="item.cover"
-                 :class="{closeRestorane: !item.is_open }"
+                 :class="{ closeRestorane: !item.is_open }"
             />
             <div class="item__bottom-block">
               <div class="card__time" v-show="isCurrentAddress">
-                <p class="card__time-quantity">{{item.time.min}} &mdash; {{item.time.max}}</p>
+                <p class="card__time-quantity">{{ item.time.min }} &mdash; {{ item.time.max }}</p>
                 <p class="card__time-unit">мин</p>
               </div>
               <div class="card__title">
                 <span class="item__name"
-                      :class="{hidetime: isCurrentAddress}"
+                      :class="{ hidetime: isCurrentAddress }"
                 >
                   {{ item.name }}
                 </span>
                 <v-chip class="item-chip"
                         color="primary"
-                        v-show="item.rating !== 0"
+                        v-show="Boolean(item.rating)"
                 >
                   <v-icon color="#FFFADF">star</v-icon>
                   <div class="item-chip__rating">{{ item.rating }}</div>
@@ -39,7 +40,7 @@
               </div>
               <div class="card__options">
                 <img class="options__delivery"
-                     src="@/assets/svg/deliveryIcon.svg"
+                     src="../../assets/svg/deliveryIcon.svg"
                      alt="deliveryIcon"
                 />
                 <span class="options__free-delivery">
@@ -69,8 +70,8 @@
     <div class="restaurants-list__button">
       <v-btn color="primary"
              class="show-more__button"
-             @click="showMoreRestaurants"
-             v-show="restaurantsList.length > limitValue"
+             @click="increaseRestaurantsShowLimit"
+             v-show="restaurantsList.length > restaurantsShowLimit"
              :loading="isLoading"
       >
         Показать ещё
@@ -84,6 +85,7 @@
 
 <script>
   import { translitereteRusToLatin } from "../../utils/functions/transliter";
+  import { DEFAULT_RESTAURANTS_SHOW_LIMIT } from "../../utils/confs/pages/restaurants";
 
   export default {
     props: {
@@ -103,7 +105,7 @@
     data () {
       return {
         isFound: true,
-        limitValue: 12,
+        restaurantsShowLimit: DEFAULT_RESTAURANTS_SHOW_LIMIT,
         isLoading: false,
         restOverlay: false,
       }
@@ -122,8 +124,8 @@
           }
         };
       },
-      showMoreRestaurants () {
-        // TODO
+      increaseRestaurantsShowLimit () {
+        this.restaurantsShowLimit += 12;
       }
     }
   }
@@ -385,6 +387,16 @@
   .rating__icon {
     font-size: 18px;
     margin-right: 5px;
+  }
+
+  .show-more__button {
+    font-size: 16px !important;
+    width: calc(100% - 32px);
+    margin: 0 16px 16px;
+    @include media($lg) {
+      width: calc(100% - 140px);
+      margin: 20px 70px;
+    }
   }
 
 </style>

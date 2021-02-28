@@ -36,10 +36,7 @@
                   </span>
                 </div>
                 <span class="size__price">
-                  {{ size.price - dish.sizes[0].price === 0
-                      ? ``
-                      : `+${(size.price - dish.sizes[0].price).toFixed(1)} BYN`
-                  }}
+                  {{ countDiffPrice(size) }}
                 </span>
               </template>
             </v-radio>
@@ -100,7 +97,7 @@
                       {{ option.price[0] !== undefined
                           ? (option.price[0].price == null
                               ? `0` :( option.price[0].price > 0
-                                  ? `+ ${option.price[0].price}` :`${optionV.price[0].price}`))
+                                  ? `+ ${option.price[0].price}` :`${option.price[0].price}`))
                               : 0
                       }} BYN
                     </span>
@@ -113,17 +110,17 @@
       </div>
       <div class="options__bottom">
         <div class="options__interact-area">
-          <yest-button class="options__button" @click="">
+          <yest-button class="options__button" @click="onAddButtonClick">
             Добавить
           </yest-button>
           <div class="options__buttons-block">
-            <v-icon color="black" @click="">
+            <v-icon color="black" @click="decrementSelectedDishCounter">
               remove
             </v-icon>
             <span class="options__dish-count">
               {{ selectedDishCounter }}
             </span>
-            <v-icon color="black" @click="">
+            <v-icon color="black" @click="incrementSelectedDishCounter">
               add
             </v-icon>
           </div>
@@ -133,7 +130,7 @@
             Сумма
           </div>
           <div class="final-price__price-value">
-            {{ (sizesRadioButtons.price * selectedDishCounter).toFixed(1) }} BYN
+            {{ getTotalPrice }} BYN
           </div>
         </div>
       </div>
@@ -142,7 +139,10 @@
 </template>
 
 <script>
+  import dishModalMixin from "../../utils/mixins/dishModalMixin";
+
   export default {
+    mixins: [ dishModalMixin ],
     props: {
       dish: {
         type: Object,
@@ -151,18 +151,7 @@
     },
     data () {
       return {
-        selectedSize: null,
-        sizesRadioButtons: '',
-        selectedDishCounter: 1,
         dishOptionsCounter: 0
-      }
-    },
-    methods: {
-      onAddButtonClick () {
-        this.$emit('addButtonClicked', this.prepareDishObject());
-      },
-      prepareDishObject () {
-        return Object.assign(this.dish, { selectedSize: this.selectedSize })
       }
     }
   }

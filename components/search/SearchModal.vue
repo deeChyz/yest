@@ -1,7 +1,7 @@
 <template>
   <v-card class="search-modal__block">
     <div class="search-modal__input-block">
-      <input class="search-modal__input" type="text" placeholder="Найти в еде" v-model="searchText">
+      <input class="search-modal__input" type="text" placeholder="Найти в еде" :value="searchText" @input="onSearchInput($event.target.value)">
       <div class="search-modal__button" @click="$emit('closeModalWindow')">
         Отменить
       </div>
@@ -11,13 +11,32 @@
 </template>
 
 <script>
-  import Search from "@/components/search/Search";
+  import Search from "../../components/search/Search";
 
   export default {
     data () {
-        return {
-          searchText: '',
-        }
+      return {
+        searchText: ''
+      }
+    },
+    mounted() {
+      const layout = document.getElementById('app').parentElement;
+      if (layout) {
+        layout.style['height'] = '100vh';
+        layout.style['overflow'] = 'hidden';
+      }
+    },
+    beforeDestroy() {
+      const layout = document.getElementById('app').parentElement;
+      if (layout) {
+        layout.style['height'] = 'unset';
+        layout.style['overflow'] = 'unset';
+      }
+    },
+    methods: {
+      onSearchInput (val) {
+        this.searchText = val;
+      }
     },
     components: {
       Search

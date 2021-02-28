@@ -18,6 +18,7 @@
     <List :restaurantsList='restaurantsList'
           :currentCategory='currentCategory'
     />
+    <MyOrder v-if="getRestaurantUrl && getTotalPriceWithDelivery" :restaurant="getRestaurantUrl" :is-mobile="isMobile" is-restaurants-list/>
   </div>
 </template>
 
@@ -27,6 +28,8 @@
   import Categories from "../../components/restaurants/Categories.vue";
   import Offers from "../../components/restaurants/Offers.vue";
   import List from "../../components/restaurants/List.vue";
+  import MyOrder from "../../components/order/MyOrder";
+  import deviceMixin from "../../utils/mixins/deviceMixin";
   import CategoryApi from "../../api/CategoryApi";
   import ZoneApi from "../../api/ZoneApi";
   import RestaurantApi from "../../api/RestaurantApi";
@@ -43,11 +46,16 @@
     STORE_SET_SELECTED_ZONE,
     STORE_GET_CURRENT_COORDS,
     STORE_SET_CATEGORIES,
-    STORE_GET_SELECTED_ZONE,
+    STORE_GET_SELECTED_ZONE
   } from "../../utils/confs/pages/restaurants";
+  import {
+    STORE_GET_RESTAURANT_URL,
+    STORE_GET_TOTAL_PRICE_WITH_DELIVERY
+  } from "@/utils/confs/pages/basket";
 
 
   export default {
+    mixins: [ deviceMixin ],
     data () {
       return {
         showSetAddressLabel: true,
@@ -163,7 +171,7 @@
       },
       setCategorySeoInfo () {
         this.$nextTick(() => {
-          const backgroundImage =  document.getElementById('bgImg');
+          const backgroundImage = document.getElementById('bgImg');
           if (window.innerWidth < 992 && backgroundImage) {
             backgroundImage.setAttribute(
                 'style',
@@ -220,7 +228,9 @@
     },
     computed: {
       ...mapGetters({
-        getCurrentCoords: STORE_GET_CURRENT_COORDS
+        getCurrentCoords: STORE_GET_CURRENT_COORDS,
+        getRestaurantUrl: STORE_GET_RESTAURANT_URL,
+        getTotalPriceWithDelivery: STORE_GET_TOTAL_PRICE_WITH_DELIVERY
       })
     },
     jsonld () {
@@ -246,7 +256,8 @@
       Offers,
       List,
       SpecialOffers,
-      Categories
+      Categories,
+      MyOrder
     },
   }
 </script>
