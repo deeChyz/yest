@@ -81,5 +81,15 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+    babel: {
+      presets: [
+        [
+          require.resolve("@nuxt/babel-preset-app"),
+          {
+            browsers: ["IE 11", "last 2 version"]
+          }
+        ]
+      ]
+    }
   }
 }
